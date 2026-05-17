@@ -154,11 +154,6 @@ G2rayXCodeLeafy/
 > 
 > 🌐 *Please use responsibly and ethically.*
 
-<details>
-<summary>📖 Full Tutorial & Documentation</summary>
-
-👉 [Click here for the Step-by-Step Written Tutorial](#) *(replace with actual link)*
-
 </details>
 
 ---
