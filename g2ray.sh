@@ -767,6 +767,8 @@ while true; do
 
             echo "$_VLESS" > "$MOBILE_CONFIG_FILE"
 
+            _COUNTRY=$(curl -s --max-time 3 https://ipinfo.io/country < /dev/null 2>/dev/null || echo "Unknown")
+
             VLESS_HASH=$(echo -n "$_VLESS" | md5sum | awk '{print $1}')
             PROMPT_FLAG="$DATA_DIR/.prompted_${VLESS_HASH}"
             if [ ! -f "$PROMPT_FLAG" ]; then
@@ -785,12 +787,14 @@ while true; do
             fi
 
             refresh_screen
+
             echo -e "  ${GREEN}╔══════════════════════════════════════════════╗${NC}"
             echo -e "  ${GREEN}║${NC}      ${WHITE}Scan to Connect (G2rayXCodeLeafy)${NC}       ${GREEN}║${NC}"
             echo -e "  ${GREEN}╚══════════════════════════════════════════════╝${NC}\n"
 
             if command -v qrencode >/dev/null 2>&1; then
-                qrencode -t ANSIUTF8 "$_VLESS" | sed 's/^/  /'
+                # -t ANSIUTF8 ensures a white background with a clean top/bottom margin (-m 2)
+                qrencode -m 2 -t ANSIUTF8 "$_VLESS" | sed 's/^/  /'
             else
                 echo -e "  ${DIM}(qrencode not installed — QR code unavailable)${NC}"
             fi
@@ -800,16 +804,24 @@ while true; do
             echo -e "  ${GREEN}╚══════════════════════════════════════════════╝${NC}"
             echo -e "  ${WHITE}${_VLESS}${NC}\n"
 
-            echo -e "  ${GREEN} PRO TIP FOR STABILITY & BETTER SPEEDS ${NC}"
+            if [[ "$_COUNTRY" != "DE" && "$_COUNTRY" != "Unknown" ]]; then
+                echo -e "  ${RED}──────────────────────────────────────────────${NC}"
+                echo -e "  ${RED}⚠ WARNING: Codespace is NOT in Germany (${_COUNTRY})!${NC}"
+                echo -e "  ${WHITE}For optimal performance and compatibility, it must be in Germany.${NC}"
+                echo -e "  ${WHITE}Please delete this Codespace, recreate it, and manually set${NC}"
+                echo -e "  ${WHITE}the region to 'Europe West' (Germany) in GitHub's settings.${NC}"
+                echo -e "  ${RED}──────────────────────────────────────────────${NC}\n"
+            fi
+
+            echo -e "  ${RED}⚠ IF THE CONFIG DOES NOT WORK:${NC}"
             echo -e "  ${DIM}──────────────────────────────────────────────${NC}"
-            echo -e "  ${WHITE}1. Go to: ${GREEN}https://code-leafy.github.io/NetLeafy${NC}"
-            echo -e "  ${WHITE}2. Put server on ${GREEN}G2ray${NC}"
-            echo -e "  ${WHITE}3. Generate G2ray configs with different IPs!${NC}"
+            echo -e "  ${WHITE}Put this config in here on ${GREEN}G2ray${WHITE} mode and generate working configs:${NC}"
+            echo -e "  ${GREEN}https://code-leafy.github.io/NetLeafy${NC}"
             echo -e "  ${DIM}──────────────────────────────────────────────${NC}\n"
 
             echo -e "  ${GREEN}📱 Mobile Config saved to:${NC}"
             echo -e "  ${WHITE}${MOBILE_CONFIG_FILE}${NC}"
-            echo -e "  ${DIM}Open that file and paste the link into your client app.${NC}\n"
+            echo -e "  ${DIM}Download the txt file and recive the config.${NC}\n"
             read -rp "  Press Enter to return..."
             ;;
 
